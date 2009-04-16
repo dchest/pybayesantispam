@@ -4,6 +4,7 @@ PyBayesAntispam
 Simple Bayesian spam rating in Python that is easy to use, small, contained in a single file, and doesn't require any external modules.
 
 Author: Dmitry Chestnykh, [Coding Robots](http://www.codingrobots.com)
+License: MIT (see bayes.py)
 
 
 Example usage
@@ -97,6 +98,8 @@ Using PyBayesAntispam from shell
 
 You can use PyBayesAntispam as a stand-alone executable.
 
+Since training data is loaded on every execution, it's currently inefficient to use PyBayesAntispam from shell with large training databases and a lot of messages.
+
 #### Usage
 
 	Usage: bayes.py [option] datafile < infile
@@ -127,19 +130,17 @@ Another example of checking:
 	$ echo "I don't use viagra (yet)" | ./bayes.py -c test.dat
 	0.16
 
-Since training data is loaded on every execution, it's currently inefficient to use PyBayesAntispam from shell with large training databases and a lot of messages.
-
 
 Implementation details
 ----------------------
 
 ### Storage
 
-Storage stores database of tokens using cPickle (since it seems like an efficient way to store binary data [ref. 1]). The data values stored in file are *totals* and *tokens*.
+Storage stores database of tokens using cPickle (since it seems like an efficient way to store binary data [ref. 1]). Data values stored in file are *totals* and *tokens*.
 
 Totals is a simple dictionary:
 
-	totals = {'spam':count, 'ham':count}
+	totals = {'spam':integer, 'ham':integer}
 
 
 Tokens is a dictionary of lists with the following schema:
@@ -161,7 +162,7 @@ When you check a message, probabilities are being calculated [ref. 2] from *tota
 where:
  	
 * *p* is the probability (rating) that the given message is spam.
-* *pN* is probability the that it is a spam knowing it contains a Nth word.
+* *pN* is the probability that it is a spam knowing it contains a Nth token.
 
 pN is calculated using the following formula:        
     
@@ -183,13 +184,13 @@ Message is spam (as used by *is_spam()* function): > 0.9
 
 #### Token separation
 
-* Everything between whitespace or separator characters are tokens (e.g. "Hello, there!!! Nice weather?" is split to ["hello", "there", "nice", "weather])...
+* Everything between whitespace or separator characters are tokens (e.g. "Hello, there!!! Nice weather?" is split to ["hello", "there", "nice", "weather"])...
 
-* ...except for dot between digits (e.g. "Address 192.168.1.3" is ["address", "192.168.1.3"], or "$10.80 payment" is ["$10.80", "payment"]) [ref. 4]
+* ...except that dot between digits is not a separator (e.g. "Address 192.168.1.3" is ["address", "192.168.1.3"], or "$10.80 payment" is ["$10.80", "payment"]) [ref. 4]
 
 * Tokens are case insensitive (e.g. "spam" and "SPAM" has the same probability), i.e. they are converted to lowercase. It should work better for small training databases.
 
-* Dashes between words are preserved (e.g. "know-how" is a single token, but "hey - you" are two tokens, "hey" and "you")
+* Dashes between words are preserved (e.g. "know-how" is a single token, but "hey - you" are two tokens, "hey" and "you").
 
 * Tokens with 2 or less characters are not considered (e.g "this is not me" is two tokens "this" and "not".)
 
