@@ -31,7 +31,7 @@ Train and/or check for spam (described below). After you're done (e.g. before ex
 	
 to save changes (they'll be saved only if needed).
 
-### Explanation
+#### Explanation
 
 First, you create a *Storage* object with the following arguments:
 		
@@ -60,7 +60,7 @@ For a Bayesian antispam filtering system to work, you should train it on bad (sp
 	ham_message = "Paul Graham doesn't need Viagra. He is NP-hard."
 	bayes.train(ham_message, False)
 	
-### Explanation
+#### Explanation
 
 *train()* takes two arguments:
 
@@ -85,7 +85,7 @@ After you trained your system with enough data, you can rate or check messages u
 	bayes.is_spam(m2)       # => False
 	bayes.spam_rating(m2)   # => 0.16  
 	
-### Explanation
+#### Explanation
 
 Both methods take text message you want to check for spam as an argument.
 
