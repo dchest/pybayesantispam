@@ -4,6 +4,7 @@ PyBayesAntispam
 Simple Bayesian spam rating in Python that is easy to use, small, contained in a single file, and doesn't require any external modules.
 
 Author: Dmitry Chestnykh, [Coding Robots](http://www.codingrobots.com)
+
 License: MIT (see bayes.py)
 
 
