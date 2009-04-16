@@ -197,7 +197,7 @@ Message is spam (as used by *is_spam()* function): > 0.9
 
 (Finally, as said before, tokens are not words, but hash(token).)
 
-#### References
+### References
 
 1. Didip Kerabat. [Python: cPickle vs ConfigParser vs Shelve Performance](http://rapd.wordpress.com/2009/03/26/python-cpickle-vs-configparser-vs-shelve-performance/), 2009
 2. -. [Bayesian Spam Filtering](http://en.wikipedia.org/wiki/Bayesian_spam_filtering). *Wikipedia*.
