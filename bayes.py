@@ -156,9 +156,9 @@ class Bayes:
             ratings.sort()
             ratings = ratings[:10] + ratings[-10:]
                     
+        p = reduce(operator.mul, ratings)
+        omp = reduce(operator.mul, map(lambda r: 1.0-r, ratings))
         try:
-            p = reduce(operator.mul, ratings)
-            omp = reduce(operator.mul, map(lambda r: 1.0-r, ratings))
             return p / (p + omp)
             #
             ### Robinson's method: http://tinyurl.com/robinsons
