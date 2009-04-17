@@ -149,7 +149,10 @@ class Bayes:
             #print(rating)
             p = p * rating
             omp = omp * (1.0 - rating)
-        return p / (p + omp)
+        try:
+            return p / (p + omp)
+        except ZeroDivisionError:
+            return 0.0
         
     def is_spam(self, message):
         """Checks if message is spam.
