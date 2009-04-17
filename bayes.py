@@ -26,9 +26,10 @@
 
 
 import cPickle as pickle
-import re, string, threading
+import re, string
 import fcntl
 import sys, getopt
+import operator
 
 class Storage:
     def __init__(self, filename, min_save_count=5):
@@ -131,9 +132,11 @@ class Bayes:
         
         hashes = map(lambda x: hash(string.upper(x)), \
                      self.__get_words_list(message))
+        ratings = []
         for h in hashes:
             try:
                 ham_count, spam_count = tokens[h]
+                # ham_count *= 2  # this increases weight of ham
                 if spam_count > 0 and ham_count == 0:
                     rating = 0.99
                 elif spam_count == 0 and ham_count > 0:
@@ -142,17 +145,37 @@ class Bayes:
                     ham_prob = float(ham_count) / float(total_ham)
                     spam_prob = float(spam_count) / float(total_spam)
                     rating = spam_prob / (ham_prob + spam_prob)
+                    if rating < 0.01:
+                        rating = 0.01
                 else:
                     rating = 0.4 # normally this won't happen
             except KeyError:
                 rating = 0.4 # never seen this word
-            #print(rating)
-            p = p * rating
-            omp = omp * (1.0 - rating)
+            ratings.append(rating)
+
+        if (len(ratings) > 20):
+            # leave only 20 most "interesting" ratings: 
+            # 10  hightest and 10 lowest
+            ratings.sort()
+            ratings = ratings[:10] + ratings[-10:]
+                    
         try:
+            p = reduce(operator.mul, ratings)
+            omp = reduce(operator.mul, map(lambda r: 1.0-r, ratings))
             return p / (p + omp)
+            #
+            ### Robinson's method: http://tinyurl.com/robinsons
+            ### Which one is better?
+            # 
+            # nth = 1./len(ratings)
+            # P = 1.0 - reduce(operator.mul, \
+            #           map(lambda p: 1.0-p, ratings), 1.0) ** nth
+            # Q = 1.0 - reduce(operator.mul, ratings) ** nth
+            # S = (P - Q) / (P + Q)
+            # return (1 + S) / 2
+            
         except ZeroDivisionError:
-            return 0.0
+            return 0.5 # got float underflow, not sure about rating
         
     def is_spam(self, message):
         """Checks if message is spam.
