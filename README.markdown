@@ -173,6 +173,8 @@ pN is calculated using the following formula:
 
 where *spam\_count* and *ham\_count* are counts for a given token.
 
+Only 20 most interesting probabilities (pN) [ref. 3] are used to calculate final probability (p): 10 highest and 10 lowest. Also, lowest p(N) probability is 0.01 to avoid float underflows.
+
 #### Default probabilities [ref. 3]
 
 Token has 0 hams, 1 or more spams: 0.99
