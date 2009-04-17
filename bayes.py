@@ -127,9 +127,6 @@ class Bayes:
         if not tokens:
             return 0.4
 
-        p = 1.0
-        omp = 1.0
-        
         hashes = map(lambda x: hash(string.upper(x)), \
                      self.__get_words_list(message))
         ratings = []
