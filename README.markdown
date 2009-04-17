@@ -185,9 +185,9 @@ Message is spam (as used by *is_spam()* function): > 0.9
 
 #### Token separation
 
-* Everything between whitespace or separator characters are tokens (e.g. "Hello, there!!! Nice weather?" is split to ["hello", "there", "nice", "weather"])...
+* Everything between whitespace or separator characters is a token (e.g. "Hello, there!!! Nice weather?" is split to ["hello", "there", "nice", "weather"])...
 
-* ...except that dot between digits is not a separator (e.g. "Address 192.168.1.3" is ["address", "192.168.1.3"], or "$10.80 payment" is ["$10.80", "payment"]) [ref. 4]
+* ...except that dots between digits are not separators (e.g. "Address 192.168.1.3" is ["address", "192.168.1.3"], or "$10.80 payment" is ["$10.80", "payment"]) [ref. 4]
 
 * Tokens are case insensitive (e.g. "spam" and "SPAM" has the same probability), i.e. they are converted to lowercase. It should work better for small training databases.
 
