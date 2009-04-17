@@ -68,6 +68,8 @@ class Storage:
             
 class Bayes:
 
+    TOKENS_RE = re.compile(r"[\s\:;\(\)\?\"\!\/]+|--|\D\./u")
+
     def __init__(self, storage):
         self.storage = storage            
     
@@ -75,7 +77,7 @@ class Bayes:
         """Return list of tokens (words) from string message"""
         # split message to words 
         # (remove separators everywhere except for numbers with dots)
-        words = re.split(r"[\s\:;\(\)\?\"\!\/]+|--|\D\./u", message)
+        words = self.TOKENS_RE.split(message)
         # filter out words that has 2 or less characters
         words = filter(lambda s: len(s) > 2, words)
         return words
@@ -185,13 +187,15 @@ def main():
     bayes = Bayes(storage)
     # process options
     for o, a in opts:
-        if o in ("--help"):
+        if o in ("--help", ""):
             usage()
             sys.exit(0)
         elif o in ("-s", "--train-spam"):
             bayes.train(sys.stdin.read(), True)
+            print("Trained as spam")
         elif o in ("-h", "--train-ham"):
             bayes.train(sys.stdin.read(), False)
+            print("Trained as ham")
         elif o in ("-c", "--check"):
             print("%.2f" % bayes.spam_rating(sys.stdin.read()))
         else:
