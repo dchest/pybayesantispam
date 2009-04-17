@@ -24,14 +24,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-
 import cPickle as pickle
-import re, string
+import re
+import string
 import fcntl
-import sys, getopt
+import sys
+import getopt
 import operator
 
-class Storage:
+class Storage(object):
     def __init__(self, filename, min_save_count=5):
         self.filename = filename
         self.totals = None
@@ -67,7 +68,8 @@ class Storage:
         if self.save_count > 0:
             self.save()
             
-class Bayes:
+            
+class Bayes(object):
 
     TOKENS_RE = re.compile(r"[\s\:;\(\)\?\"\!\/]+|--|\D\./u")
 
@@ -160,19 +162,8 @@ class Bayes:
         omp = reduce(operator.mul, map(lambda r: 1.0-r, ratings))
         try:
             return p / (p + omp)
-            #
-            ### Robinson's method: http://tinyurl.com/robinsons
-            ### Which one is better?
-            # 
-            # nth = 1./len(ratings)
-            # P = 1.0 - reduce(operator.mul, \
-            #           map(lambda p: 1.0-p, ratings), 1.0) ** nth
-            # Q = 1.0 - reduce(operator.mul, ratings) ** nth
-            # S = (P - Q) / (P + Q)
-            # return (1 + S) / 2
-            
-        except ZeroDivisionError:
-            return 0.5 # got float underflow, not sure about rating
+        except ZeroDivisionError: # got float underflow, not sure about rating
+            return 0.5
         
     def is_spam(self, message):
         """Checks if message is spam.
