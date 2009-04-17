@@ -189,7 +189,7 @@ Message is spam (as used by *is_spam()* function): > 0.9
 
 * ...except that dots between digits are not separators (e.g. "Address 192.168.1.3" is ["address", "192.168.1.3"], or "$10.80 payment" is ["$10.80", "payment"]) [ref. 4]
 
-* Tokens are case insensitive (e.g. "spam" and "SPAM" has the same probability), i.e. they are converted to lowercase. It should work better for small training databases.
+* Tokens are case insensitive (e.g. "spam" and "SPAM" have the same probability), i.e. they are converted to lowercase. It should work better for small training databases.
 
 * Dashes between words are preserved (e.g. "know-how" is a single token, but "hey - you" are two tokens, "hey" and "you").
 
