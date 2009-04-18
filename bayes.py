@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
-Simple Bayesian spam rating in Python that is easy to use, small, contained in a single file, and doesn't require any external modules.
+Simple Bayesian spam rating in Python that is easy to use, small, contained in
+a single file, and doesn't require any external modules.
 """
 #
 # Copyright (c) 2009 Dmitry Chestnykh, Coding Robots 
