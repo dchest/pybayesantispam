@@ -132,6 +132,14 @@ Another example of checking:
 	0.16
 
 
+Running tests
+-------------
+
+PyBayesAntispam includes a few unit tests. To run them:
+
+	$ ./tests.py
+
+
 Implementation details
 ----------------------
 
