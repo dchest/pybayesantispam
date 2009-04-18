@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-
-# bayes.py - Bayesian spam rating
-# MIT License
+"""
+Simple Bayesian spam rating in Python that is easy to use, small, contained in a single file, and doesn't require any external modules.
+"""
 #
 # Copyright (c) 2009 Dmitry Chestnykh, Coding Robots 
 #                    http://www.codingrobots.com
@@ -35,8 +35,8 @@ import operator
 class Storage(object):
     def __init__(self, filename, min_save_count=5):
         self.filename = filename
-        self.totals = None
-        self.tokens = None
+        self.totals = {'spam':0, 'ham':0}
+        self.tokens = {}
         self.save_count = 0
         self.min_save_count = min_save_count
         
@@ -53,6 +53,7 @@ class Storage(object):
             fcntl.flock(f.fileno(), fcntl.LOCK_EX)
             pickle.dump([self.totals, self.tokens], f, -1)
             f.close()
+        self.save_count = 0
     
     def save_if_needed(self):
         """ 
@@ -62,7 +63,6 @@ class Storage(object):
         self.save_count += 1
         if self.save_count >= self.min_save_count:
             self.save()
-            self.save_count = 0
             
     def finish(self):
         if self.save_count > 0:
@@ -71,7 +71,7 @@ class Storage(object):
             
 class Bayes(object):
 
-    TOKENS_RE = re.compile(r"[\s\:;\(\)\?\"\!\/]+|--|\D\./u")
+    TOKENS_RE = re.compile(r"\$?\d*(?:[.,]\d+)+|\w+-\w+|\w+", re.U)
 
     def __init__(self, storage):
         self.storage = storage            
@@ -79,8 +79,7 @@ class Bayes(object):
     def __get_words_list(self, message):
         """Return list of tokens (words) from string message"""
         # split message to words 
-        # (remove separators everywhere except for numbers with dots)
-        words = self.TOKENS_RE.split(message)
+        words = self.TOKENS_RE.findall(message)
         # filter out words that has 2 or less characters
         words = filter(lambda s: len(s) > 2, words)
         return words
@@ -89,16 +88,10 @@ class Bayes(object):
         """Train database with message"""
         totals = self.storage.totals
         tokens = self.storage.tokens
-        if not totals:
-            totals = {'spam':0, 'ham':0}
-            self.storage.totals = totals
         if is_spam:
             totals['spam'] += 1
         else:
             totals['ham'] += 1
-        if not tokens:
-            tokens = {}
-            self.storage.tokens = tokens
         
         # compute hashes of uppercase words
         hashes = map(lambda x: hash(string.upper(x)), \
@@ -167,7 +160,7 @@ class Bayes(object):
         
     def is_spam(self, message):
         """Checks if message is spam.
-         Message is considered spam if it's rating is more than 0.9
+         Message is considered spam if its rating is more than 0.9
          """
         return self.spam_rating(message) > 0.9
 
